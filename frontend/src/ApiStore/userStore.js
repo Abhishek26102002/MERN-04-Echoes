@@ -1,0 +1,107 @@
+import { toast } from "react-hot-toast";
+import { axiosInstance } from "../lib/axios.js";
+import { create } from "zustand";
+import { io } from "socket.io-client";
+
+const BASE_URL = "https://mern-04-echoes-2.onrender.com";
+
+export const userStore = create((set, get) => ({
+  setuser: null,
+  isSignup: false,
+  isLogin: false,
+  isUpdateProfile: false,
+  isCheckingAuth: true,
+  onlineUsers: [],
+  socket: null,
+
+  checkAuth: async () => {
+    try {
+      const res = await axiosInstance.get("/auth/check");
+      set({ setuser: res.data.data });
+      get().connectSocket(); //Socket Connect
+    } catch (error) {
+      console.log("Error in --> Check Auth userStore", error);
+      // toast.error(error.response.data.message);
+      set({ setuser: null });
+    } finally {
+      set({ isCheckingAuth: false });
+    }
+  },
+
+  signup: async (data) => {
+    set({ isSignup: true });
+    try {
+      const res = await axiosInstance.post("/auth/signup", data);
+      set({ setuser: res.data.data });
+      toast.success(res.data.message);
+      get().connectSocket(); //Socket Connect
+    } catch (error) {
+      console.log("Error in Signup userStore", error);
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isSignup: false });
+    }
+  },
+  login: async (data) => {
+    set({ isLogin: true });
+    try {
+      const res = await axiosInstance.post("/auth/login", data);
+      set({ setuser: res.data.data });
+      toast.success(res.data.message);
+      get().connectSocket(); //Socket Connect
+    } catch (error) {
+      console.log("Error in Login userStore", error);
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isLogin: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      const res = await axiosInstance.post("/auth/logout");
+      set({ setuser: null });
+      toast.success(res.data.message);
+      get().disconnectSocket();
+    } catch (error) {
+      console.log("Error in logout userStore", error);
+      toast.error(error.response.data.message);
+    }
+  },
+
+  updateprofile: async (data) => {
+    set({ isUpdateProfile: true });
+    try {
+      const res = await axiosInstance.put("/auth/update-profile", data);
+      set({ setuser: res.data.data });
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log("Error in updateProfile userStore", error);
+      toast.error("Too Large image");
+    } finally {
+      set({ isUpdateProfile: false });
+    }
+  },
+
+  connectSocket: () => {
+    const { setuser } = get();
+    // if the user is not logged in /not Authenticated or already connected so dont make connection
+    if (!setuser || get().socket?.connected) return;
+
+    const socket = io(BASE_URL, {
+      query: {
+        userId: setuser._id,
+      },
+    });
+    socket.connect();
+    set({ socket: socket });
+
+    // now get the method from backend and let everyone know that the user is Connected
+    socket.on('getOnlineUsers',(userIds)=>{
+      set({onlineUsers:userIds})
+    })
+  },
+  disconnectSocket: () => {
+    if (get().socket?.connected) get().socket.disconnect();
+  },
+}));
