@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-app.use(cors({ origin: "https://mern-04-echoes.vercel.app/", credentials: true }));
+app.use(cors({ origin: "https://mern-04-echoes.vercel.app", credentials: true }));
 
 
 app.get("/", (req, res) => {
