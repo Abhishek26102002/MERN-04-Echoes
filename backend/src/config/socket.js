@@ -5,11 +5,10 @@ import express from "express";
 const app = express();
 const server = http.createServer(app);
 
-const allowedOrigins = ["https://mern-04-echoes.vercel.app"];
 
 const io = new Server(server, {
  cors: {
-    origin: allowedOrigins,
+    origin: "https://mern-04-echoes.vercel.app",
   },
 });
 
