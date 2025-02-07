@@ -20,8 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
+const allowedOrigins = ["https://mern-04-echoes.vercel.app"];
+
 app.use(cors({
-  origin: "*", // Or use '*' to allow all origins
+  origin: allowedOrigins, // Or use '*' to allow all origins
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
