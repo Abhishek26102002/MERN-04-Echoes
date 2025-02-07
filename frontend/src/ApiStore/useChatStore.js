@@ -58,8 +58,6 @@ export const useChatStore = create((set, get) => ({
     socket.off("newMessage");
 
     socket.on("newMessage", (newMessage) => {
-      console.log(newMessage);
-
       // Ensure the message belongs to the selected user before adding it
       if (newMessage.senderId !== selectedUser._id) return;
 

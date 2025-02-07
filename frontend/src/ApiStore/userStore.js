@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 import { create } from "zustand";
 import { io } from "socket.io-client";
 
-const BASE_URL = "https://mern-04-echoes-2.onrender.com";
+const BASE_URL =import.meta.env.MODE === "development"? "http://localhost:5001":"/";
 
 export const userStore = create((set, get) => ({
   setuser: null,
@@ -20,7 +20,7 @@ export const userStore = create((set, get) => ({
       set({ setuser: res.data.data });
       get().connectSocket(); //Socket Connect
     } catch (error) {
-      console.log("Error in --> Check Auth userStore", error);
+      console.log("Error in Check Auth userStore", error);
       // toast.error(error.response.data.message);
       set({ setuser: null });
     } finally {
