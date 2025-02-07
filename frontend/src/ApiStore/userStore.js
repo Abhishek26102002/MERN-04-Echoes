@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 import { create } from "zustand";
 import { io } from "socket.io-client";
 
-const BASE_URL = "https://mern-04-echoes-2.onrender.com/api";
+const BASE_URL = "https://mern-04-echoes-2.onrender.com/api/";
 
 export const userStore = create((set, get) => ({
   setuser: null,
