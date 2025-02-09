@@ -2,8 +2,10 @@ import { toast } from "react-hot-toast";
 import { axiosInstance } from "../lib/axios.js";
 import { create } from "zustand";
 import { io } from "socket.io-client";
+import { useChatStore } from "./useChatStore.js";
 
-const BASE_URL =import.meta.env.MODE === "development"? "http://localhost:5001":"/";
+const BASE_URL =
+  import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
 
 export const userStore = create((set, get) => ({
   setuser: null,
@@ -82,7 +84,20 @@ export const userStore = create((set, get) => ({
       set({ isUpdateProfile: false });
     }
   },
-
+  deleteuser: async (email) => {
+    try {
+      const res = await axiosInstance.delete("/auth/delete", {
+        data: { email },
+      });
+      if (res.data.success) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log("Error in deleteuser userStore", error);
+      toast.error(error.response.data.message);
+    }
+  },
+ 
   connectSocket: () => {
     const { setuser } = get();
     // if the user is not logged in /not Authenticated or already connected so dont make connection
@@ -97,9 +112,9 @@ export const userStore = create((set, get) => ({
     set({ socket: socket });
 
     // now get the method from backend and let everyone know that the user is Connected
-    socket.on('getOnlineUsers',(userIds)=>{
-      set({onlineUsers:userIds})
-    })
+    socket.on("getOnlineUsers", (userIds) => {
+      set({ onlineUsers: userIds });
+    });
   },
   disconnectSocket: () => {
     if (get().socket?.connected) get().socket.disconnect();

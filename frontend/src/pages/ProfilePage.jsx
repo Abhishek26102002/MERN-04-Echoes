@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { userStore } from "../ApiStore/userStore";
-import { Camera, Mail, User } from "lucide-react";
+import { Camera, Mail, User, X } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const ProfilePage = () => {
-  const { setuser, isUpdateProfile, updateprofile } = userStore();
-
-  // console.log(setuser);
+  const { setuser, isUpdateProfile, updateprofile, deleteuser } = userStore();
+  const [email, setEmail] = useState("");
+  const [confirmation, setConfirmation] = useState("");
 
   useEffect(() => {
-    setuser
+    setuser;
   }, [setuser]);
 
   const [selectedImg, setSelectedImage] = useState(null);
@@ -27,6 +28,29 @@ const ProfilePage = () => {
       await updateprofile({ profilepic: base64Image });
     };
   };
+
+  const handleDeleteAcc = async (e) => {
+    e.preventDefault();
+
+    if (!email) {
+      toast.error("Please enter your email.");
+      return;
+    }
+
+    if (confirmation.toLowerCase() !== "i confirm") {
+      toast.error("Please type 'i confirm' to proceed.");
+      return;
+    }
+
+    try {
+      await deleteuser(email);
+      // document.getElementById("my_modal_3").close();
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast.error("Failed to delete account.");
+    }
+  };
+
   return (
     <>
       {" "}
@@ -43,9 +67,7 @@ const ProfilePage = () => {
             <div className="flex flex-col items-center gap-4">
               <div className="relative">
                 <img
-                  src={
-                    selectedImg || setuser.profilepic || "./profile.png"
-                  }
+                  src={selectedImg || setuser.profilepic || "./profile.png"}
                   alt="Profile"
                   className="size-32 rounded-full object-cover border-4 "
                 />
@@ -106,9 +128,76 @@ const ProfilePage = () => {
                   <span>Member Since</span>
                   <span>{setuser.createdAt?.split("T")[0]}</span>
                 </div>
-                <div className="flex items-center justify-between py-2">
+                <div className="flex items-center justify-between py-2 border-b border-zinc-700">
                   <span>Account Status</span>
                   <span className="text-green-500">Active</span>
+                </div>
+                <div className="flex flex-col items-start gap-4 py-2">
+                  <span className="text-red-600">Danger Zone</span>
+
+                  {/* Open Modal Button */}
+                  <button
+                    onClick={() =>
+                      document.getElementById("my_modal_3").showModal()
+                    }
+                    className="btn btn-sm bg-red-500 hover:bg-red-700 text-white"
+                  >
+                    Delete Account
+                  </button>
+
+                  {/* Modal */}
+                  <dialog id="my_modal_3" className="modal">
+                    <div className="modal-box">
+                      {/* Close Button */}
+                      <form method="dialog">
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                          <X className="size-6" />
+                        </button>
+                      </form>
+
+                      {/* Delete Form */}
+                      <form
+                        onSubmit={handleDeleteAcc}
+                        className="flex flex-col gap-2 sm:gap-3"
+                      >
+                        <p>
+                          Enter your{" "}
+                          <small className="text-red-600 font-bold text-sm">
+                            Email Address
+                          </small>
+                        </p>
+                        <input
+                          type="email"
+                          className="w-[70%] input input-bordered rounded-lg input-md"
+                          placeholder="your@email.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+
+                        <p>
+                          Write{" "}
+                          <small className="text-red-600 font-bold text-sm">
+                            i confirm
+                          </small>
+                        </p>
+                        <input
+                          type="text"
+                          className="w-[70%] input input-bordered rounded-lg input-md"
+                          placeholder="Type 'i confirm'"
+                          value={confirmation}
+                          onChange={(e) => setConfirmation(e.target.value)}
+                        />
+
+                        {/* Confirm Button (Should be type="submit") */}
+                        <button
+                          className="w-[30%] btn btn-sm bg-red-500 hover:bg-red-700 text-white"
+                          type="submit"
+                        >
+                          Confirm
+                        </button>
+                      </form>
+                    </div>
+                  </dialog>
                 </div>
               </div>
             </div>

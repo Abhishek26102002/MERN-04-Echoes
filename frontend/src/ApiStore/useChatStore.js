@@ -14,12 +14,47 @@ export const useChatStore = create((set, get) => ({
     set({ isUserLoading: true });
     try {
       const res = await axiosInstance.get("/message/users");
-      set({ users: res.data.data });
+      set({ users: res.data.data[0].contact });
     } catch (error) {
       console.log("Error in getusers useChatStore", error);
       toast.error(error.response.data.message);
     } finally {
       set({ isUserLoading: false });
+    }
+  },
+  addContact: async (email) => {
+    try {
+      const res = await axiosInstance.post("/message/addcontact", { email });
+      toast.success(res.data.message);
+      await get().getUsers();
+    } catch (error) {
+      console.log("Error in AddContact useChatStore", error);
+      toast.error(error.response.data.message);
+    }
+  },
+  blockContact: async (email) => {
+  
+    try {
+      const res = await axiosInstance.post("/message/toggleblock", {
+        email,
+      });
+      toast.success(res.data.message);
+      await get().getUsers();
+    } catch (error) {
+      console.log("Error in blockContact useChatStore", error);
+      toast.error(error.response.data.message);
+    }
+  },
+  deleteMessage: async (senderId, reciverId) => {
+    try {
+      const res = await axiosInstance.delete("/message/deletemsg", {
+        data: { senderId, reciverId },
+      });
+      toast.success(res.data.message);
+      await get().getMessage(senderId);
+    } catch (error) {
+      console.log("Error in deleteMessage useChatStore", error);
+      toast.error(error.response.data.message);
     }
   },
   getMessage: async (userId) => {
