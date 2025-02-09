@@ -4,10 +4,10 @@ import {
   logout,
   signup,
   updateprofile,
-  checkAuth
+  checkAuth,
+  deleteacc,
 } from "../controllers/auth.controller.js";
 import { validateToken } from "../middleware/validateToken.middleware.js";
-
 
 const router = express.Router();
 
@@ -20,5 +20,7 @@ router.post("/signup", signup);
 router.put("/update-profile", validateToken, updateprofile);
 
 router.get("/check", validateToken, checkAuth);
+
+router.delete("/delete", validateToken, deleteacc);
 
 export default router;

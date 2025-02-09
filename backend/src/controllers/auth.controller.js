@@ -141,18 +141,55 @@ export const updateprofile = async (req, res) => {
     console.log("Error in profileUpdate Controller :", error.message);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
- 
 };
 
-export const checkAuth = (req,res)=>{
-    try {
-        res.status(200).json({
-            success:true,
-            message :"Authenticated",
-            data:req.user
-        })
-    } catch (error) {
-        console.log("Error in checkAuth Controller :", error.message);
-        res.status(500).json({ success: false, message: "Internal Server error" });
-    }
-}
+export const checkAuth = (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: "Authenticated",
+      data: req.user,
+    });
+  } catch (error) {
+    console.log("Error in checkAuth Controller :", error.message);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+export const deleteacc = async (req, res) => {
+  const LoggedinUser = req.user._id;
+  const { email } = req.body;
+
+  if (!email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email is required" });
+  }
+
+  const AuthorizedUser = await User.findOne({ email });
+
+  if (!AuthorizedUser) {
+    return res.status(400).json({
+      success: false,
+      message: "user not exist Don't try to fool us around",
+    });
+  }
+
+  if (AuthorizedUser._id.toString() !== LoggedinUser.toString()) {
+    return res.status(400).json({
+      success: false,
+      message: "You are not Authorized to delete this user",
+    });
+  }
+  try {
+    const deletedUser = await User.findByIdAndDelete(AuthorizedUser._id);
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      data: deletedUser,
+    });
+  } catch (error) {
+    console.log("Error in DeleteUser Controller :", error.message);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};

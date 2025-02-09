@@ -2,15 +2,30 @@ import express from "express";
 
 import { validateToken } from "../middleware/validateToken.middleware.js";
 
-import { getUserforSidebar ,getMessages , sendMessage} from "../controllers/message.controller.js";
+import {
+  getAllUsers,
+  addContact,
+  getUserforSidebar,
+  getMessages,
+  sendMessage,
+  blockContact,
+  deleteMessages,
+} from "../controllers/message.controller.js";
 
 const router = express.Router();
 
 router.get("/users", validateToken, getUserforSidebar);
 
-router.get("/:id", validateToken, getMessages);//check
+router.get("/allusers", validateToken, getAllUsers);
 
-router.post("/send/:id", validateToken, sendMessage); 
+router.post("/addcontact", validateToken, addContact);
 
+router.post("/toggleblock", validateToken, blockContact);
+
+router.get("/:id", validateToken, getMessages); //check
+
+router.post("/send/:id", validateToken, sendMessage);
+
+router.delete("/deletemsg", validateToken, deleteMessages);
 
 export default router;
