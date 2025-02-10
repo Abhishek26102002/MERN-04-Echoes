@@ -28,6 +28,7 @@ export const useChatStore = create((set, get) => ({
     try {
       const res = await axiosInstance.get("/message/users");
       set({ users: res.data.data[0].contact });
+     
     } catch (error) {
       console.log("Error in getusers useChatStore", error);
       toast.error(error.response.data.message);
@@ -69,6 +70,19 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.response.data.message);
     }
   },
+  deleteRequest: async (email) => {
+    try {
+      const res = await axiosInstance.delete("/message/deletereq", {
+        data: { email },
+      });
+      toast.success(res.data.message);
+      // TODO : maintain state of requests
+    } catch (error) {
+      console.log("Error in deleterequest useChatStore", error);
+      toast.error(error.response.data.message);
+    }
+  },
+  // requestToContact : in front end first call addContact the call delete Request
   getMessage: async (userId) => {
     set({ isMessageLoading: true });
     try {
@@ -76,7 +90,7 @@ export const useChatStore = create((set, get) => ({
       set({ messages: res.data.data });
     } catch (error) {
       console.log("Error in getMessage useChatStore", error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data.message);
     } finally {
       set({ isMessageLoading: false });
     }

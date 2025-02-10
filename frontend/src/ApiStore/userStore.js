@@ -20,6 +20,7 @@ export const userStore = create((set, get) => ({
     try {
       const res = await axiosInstance.get("/auth/check");
       set({ setuser: res.data.data });
+    
       get().connectSocket(); //Socket Connect
     } catch (error) {
       console.log("Error in Check Auth userStore", error);

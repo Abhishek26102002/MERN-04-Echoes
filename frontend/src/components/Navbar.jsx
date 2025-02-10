@@ -1,10 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { userStore } from "../ApiStore/userStore";
+import { useChatStore } from "../ApiStore/useChatStore";
 import { Link } from "react-router-dom";
-import { LogOut, CircleUser, Settings2 } from "lucide-react";
+import { LogOut, CircleUser, Settings2, Users } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const Navbar = () => {
   const { setuser, logout } = userStore();
+  const { addContact, deleteRequest } = useChatStore();
+
+  
+  const handleAccept = async (email) => {
+    try {
+      if (!email) {
+        toast.error("No email found.");
+        return;
+      }
+      await addContact(email);
+      await deleteRequest(email);
+      toast.success("Request Accepted");
+    } catch (error) {
+      toast.error("Error handleAccept Navbar");
+      console.error("Error handleAccept Navbar:", error);
+    }
+  };
+
+  const handleReject = async (email) => {
+    try {
+      if (!email) {
+        toast.error("No email found.");
+        return;
+      }
+      await deleteRequest(email);
+      toast.success("Request Rejected");
+    } catch (error) {
+      toast.error("Error handleReject Navbar");
+      console.error("Error handleReject Navbar:", error);
+    }
+  };
 
   return (
     <div>
@@ -40,6 +73,55 @@ const Navbar = () => {
 
               {setuser && (
                 <>
+                  <div className="dropdown dropdown-bottom dropdown-end">
+                    <div
+                      tabIndex={0}
+                      role="button"
+                      className="flex gap-2 items-center btn btn-sm"
+                    >
+                      <Users className="size-5" />
+                      <span className="hidden sm:inline">Requests</span>
+                      {setuser.requests?.length > 0 ? (
+                        <span
+                          className="absolute -top-1 -left-1 size-3 bg-pink-500 
+                  rounded-full "
+                        />
+                      ) : (
+                        " "
+                      )}
+                    </div>
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu bg-base-100 rounded-box z-[1] w-80 p-2 shadow gap-4"
+                    >
+                      {/* TODO: This would be dynamic */}
+                      {setuser.requests?.map((user) => (
+                        <li key={user._id}>
+                          <div>
+                            <img
+                              className="inline-block size-12 rounded-full"
+                              src={user.profilepic}
+                              alt="/profile.png"
+                            />
+                            <span>{user.fullname}</span>
+
+                            <button
+                              onClick={() => handleAccept(user.email)}
+                              className="btn btn-sm btn-success text-white"
+                            >
+                              Accept
+                            </button>
+                            <button
+                              onClick={() => handleReject(user.email)}
+                              className="btn btn-sm btn-error text-white"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                     <CircleUser className="size-5" />
                     <span className="hidden sm:inline">Profile</span>

@@ -27,14 +27,14 @@ const Sidebar = () => {
 
   const handleAddContact = async (e) => {
     e.preventDefault(); // Prevent form submission from reloading the page
-  
+
     try {
       const email = emailRef.current.value.trim(); // Get input value
       if (!email) {
         toast.error("Please enter an email.");
         return;
       }
-  
+
       await addContact(email);
       emailRef.current.value = ""; // Clear input after adding contact
     } catch (error) {
@@ -42,7 +42,6 @@ const Sidebar = () => {
       console.error("Error adding contact:", error);
     }
   };
-  
 
   return (
     <aside>
