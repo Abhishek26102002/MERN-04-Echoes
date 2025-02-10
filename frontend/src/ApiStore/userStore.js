@@ -59,6 +59,22 @@ export const userStore = create((set, get) => ({
     }
   },
 
+  googleAuth: async (code) => {
+    set({ isLogin: true });
+    try {
+      const res = await axiosInstance.post("/auth/google", { code });
+      console.log(res);
+      set({ setuser: res.data.data });
+      toast.success(res.data.message);
+      get().connectSocket();
+    } catch (error) {
+      console.log("Error in GoogleAuth userStore", error);
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isLogin: false });
+    }
+  },
+
   logout: async () => {
     try {
       const res = await axiosInstance.post("/auth/logout");
@@ -91,13 +107,14 @@ export const userStore = create((set, get) => ({
       });
       if (res.data.success) {
         toast.success(res.data.message);
+        window.location.reload(true);
       }
     } catch (error) {
       console.log("Error in deleteuser userStore", error);
       toast.error(error.response.data.message);
     }
   },
- 
+
   connectSocket: () => {
     const { setuser } = get();
     // if the user is not logged in /not Authenticated or already connected so dont make connection

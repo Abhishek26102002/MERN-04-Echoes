@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { userStore } from "../ApiStore/userStore";
 import {
   Eye,
   EyeClosed,
   Loader2,
   Mail,
-  MessageSquare,
   LockKeyhole,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,7 +19,7 @@ const LoginPage = () => {
     password: "",
   });
 
-  const { isLogin, login } = userStore();
+  const { isLogin, login, googleAuth } = userStore();
 
   const validateForm = () => {
     if (!formData.email.trim()) return toast.error("Email is required");
@@ -39,6 +39,24 @@ const LoginPage = () => {
     if (success) login(formData);
   };
 
+  const responseGoogle = async (authResult) => {
+    try {
+      if (authResult["code"]) {
+        await googleAuth(authResult.code);
+      } else {
+        console.log(authResult);
+        throw new Error(authResult);
+      }
+    } catch (error) {
+      console.log("Error while Google Login...", error);
+    }
+  };
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: responseGoogle,
+    onError: responseGoogle,
+    flow: "auth-code",
+  });
   return (
     <>
       <div className="min-h-screen grid lg:grid-cols-2">
@@ -56,7 +74,7 @@ const LoginPage = () => {
                 </div>
                 <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
                 <p className="text-base-content/60">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.{" "}
+                  Stay connected, start chatting, and let your echoes be heard..{" "}
                 </p>
               </div>
             </div>
@@ -122,10 +140,23 @@ const LoginPage = () => {
                 )}
               </button>
             </form>
+            <div className="flex flex-col items-center justify-center gap-3">
+              <p>Or</p>
+
+              <button onClick={handleGoogleLogin} className="btn btn-outline">
+                <img
+                  className="w-6 h-6"
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  loading="lazy"
+                  alt="Google logo"
+                />
+                <span>Login with Google</span>
+              </button>
+            </div>
 
             <div className="text-center">
               <p className="text-base-content/60">
-              New Here Signup for free. {" "}
+                New Here Signup for free.{" "}
                 <Link to="/signup" className="link link-primary">
                   Sign up
                 </Link>

@@ -3,6 +3,19 @@ import { axiosInstance } from "../lib/axios.js";
 import { create } from "zustand";
 import { userStore } from "./userStore.js";
 
+// Load separate sounds for sending and receiving messages
+const sendSound = new Audio("/receive.mp3"); // Sound for sent messages
+const receiveSound = new Audio("/receive01.mp3"); // Sound for received messages
+
+sendSound.volume = 0.5;
+receiveSound.volume = 0.5;
+
+// Function to play a sound
+const playSound = (sound) => {
+  sound.currentTime = 0; // Reset to start
+  sound.play().catch((err) => console.error("Error playing sound:", err));
+};
+
 export const useChatStore = create((set, get) => ({
   users: [],
   messages: [],
@@ -33,7 +46,6 @@ export const useChatStore = create((set, get) => ({
     }
   },
   blockContact: async (email) => {
-  
     try {
       const res = await axiosInstance.post("/message/toggleblock", {
         email,
@@ -77,6 +89,7 @@ export const useChatStore = create((set, get) => ({
         MessageData
       );
       set({ messages: [...messages, res.data.data] });
+      playSound(sendSound); // 🔊 Play sound when message is sent
     } catch (error) {
       console.log("Error in sendMessage useChatStore", error);
       toast.error(error.response.data.message);
@@ -97,6 +110,8 @@ export const useChatStore = create((set, get) => ({
       if (newMessage.senderId !== selectedUser._id) return;
 
       set({ messages: [...get().messages, newMessage] });
+
+      playSound(receiveSound);
     });
   },
 

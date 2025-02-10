@@ -23,24 +23,26 @@ const Sidebar = () => {
     getUsers();
   }, [getUsers]);
 
-
-
   if (isUserLoading) return <SidebarSkeleton />;
 
   const handleAddContact = async (e) => {
-    e.preventDefault();
-    const email = emailRef.current.value.trim(); // Get input value
-
-    if (!email) {
-      toast.error("Please enter an email.");
-      return;
-    }
+    e.preventDefault(); // Prevent form submission from reloading the page
+  
     try {
+      const email = emailRef.current.value.trim(); // Get input value
+      if (!email) {
+        toast.error("Please enter an email.");
+        return;
+      }
+  
       await addContact(email);
+      emailRef.current.value = ""; // Clear input after adding contact
     } catch (error) {
+      toast.error("Error adding contact");
       console.error("Error adding contact:", error);
     }
   };
+  
 
   return (
     <aside>
@@ -74,7 +76,7 @@ const Sidebar = () => {
                   className="w-[70%] input input-bordered rounded-lg input-md"
                   placeholder="Enter Contact Email"
                 />
-                <button className="btn btn-circle " type="button">
+                <button className="btn btn-circle" type="submit">
                   <CirclePlus />
                 </button>
               </form>
