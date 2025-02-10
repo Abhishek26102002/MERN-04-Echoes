@@ -10,6 +10,7 @@ import {
   sendMessage,
   blockContact,
   deleteMessages,
+  removeRequest,
 } from "../controllers/message.controller.js";
 
 const router = express.Router();
@@ -27,5 +28,7 @@ router.get("/:id", validateToken, getMessages); //check
 router.post("/send/:id", validateToken, sendMessage);
 
 router.delete("/deletemsg", validateToken, deleteMessages);
+
+router.delete("/deletereq", validateToken, removeRequest);
 
 export default router;

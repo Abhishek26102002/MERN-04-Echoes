@@ -56,9 +56,9 @@ export const addContact = async (req, res) => {
         .json({ success: false, message: "Email is required." });
     }
 
-    // Find the user by email
+    // Find the user by email and ensure 'requests' field is included
     const contactUser = await User.findOne({ email }).select(
-      "_id fullname email profilepic activeStatus"
+      "_id fullname email profilepic activeStatus requests"
     );
 
     if (!contactUser) {
@@ -75,7 +75,9 @@ export const addContact = async (req, res) => {
     }
 
     // Find the logged-in user
-    const loggedInUser = await User.findById(loggedInUserId);
+    const loggedInUser = await User.findById(loggedInUserId).select(
+      "contact fullname email profilepic"
+    );
 
     if (
       loggedInUser.contact.some(
@@ -99,6 +101,30 @@ export const addContact = async (req, res) => {
     loggedInUser.contact.push(newContact);
     await loggedInUser.save();
 
+    // This Line add Logged in user to Contact user's Request List
+    const reqUser = {
+      _id: loggedInUser._id,
+      email: loggedInUser.email,
+      fullname: loggedInUser.fullname,
+      profilepic: loggedInUser.profilepic,
+      requestedAt: new Date(),
+    };
+
+    // Ensure `requests` array exists before pushing
+    if (!contactUser.requests) {
+      contactUser.requests = [];
+    }
+
+    // Prevent duplicate requests
+    if (
+      !contactUser.requests.some(
+        (req) => req._id.toString() === loggedInUserId.toString()
+      )
+    ) {
+      contactUser.requests.push(reqUser);
+      await contactUser.save();
+    }
+
     res.status(200).json({
       success: true,
       message: "Contact added successfully.",
@@ -109,6 +135,38 @@ export const addContact = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error." });
   }
 };
+
+export const removeRequest = async (req, res) => {
+  try {
+    const loggedInUserId = req.user._id;
+    const { email } = req.body;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No user provided." });
+    }
+    // Find the logged-in user
+    const loggedInUser = await User.findById(loggedInUserId);
+    // Remove from `requests` list (Filtering out the request)
+    const updatedRequests = loggedInUser.requests.filter(
+      (req) => req.email !== email
+    );
+
+    loggedInUser.requests = updatedRequests;
+
+    await loggedInUser.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Request deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error Removing request:", error);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+};
+
 export const blockContact = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
