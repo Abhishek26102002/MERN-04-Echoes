@@ -6,12 +6,15 @@ import {
   updateprofile,
   checkAuth,
   deleteacc,
+  googleAuth
 } from "../controllers/auth.controller.js";
 import { validateToken } from "../middleware/validateToken.middleware.js";
 
 const router = express.Router();
 
 router.post("/login", login);
+
+router.post("/google", googleAuth);
 
 router.post("/logout", logout);
 

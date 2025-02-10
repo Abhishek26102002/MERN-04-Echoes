@@ -25,11 +25,11 @@ app.use(cookieParser());
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
-
-app.get("/", (req, res) => {
-  // Just for checking Purpose
-  res.send("Echoes /- The chat Application");
-});
+// for testing only
+// app.get("/", (req, res) => {
+//   // Just for checking Purpose
+//   res.send("Echoes /- The chat Application");
+// });
 
 app.use("/api/auth", authRoute);
 app.use("/api/message", messageRoute);

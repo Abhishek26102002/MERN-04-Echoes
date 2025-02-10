@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/token.utils.js";
 import cloudinary from "../config/cloudinary.js";
+import oauth2Client from "../utils/googleClient.utils.js";
 
 export const signup = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -101,6 +102,58 @@ export const login = async (req, res) => {
   } catch (error) {
     console.log("Error in Login Controller :", error.message);
     res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+export const googleAuth = async (req, res) => {
+  const { code } = req.body; // Receive Google ID Token from frontend as url
+
+  if (!code) {
+    return res.status(400).json({
+      success: false,
+      message: "Google token is required",
+    });
+  }
+
+  try {
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+
+    const ticket = await oauth2Client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: process.env.GOOGLE_CLIENT_ID, // Match with frontend client ID
+    });
+
+    const { email, name, picture, at_hash } = ticket.getPayload();
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        fullname: name,
+        email,
+        profilepic: picture,
+        password: at_hash,
+      });
+    }
+
+    const authToken = generateToken(user._id, res);
+
+    res.status(200).json({
+      success: true,
+      message: "Google authentication successful!",
+      token: authToken,
+      data: {
+        _id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        profilepic: user.profilepic,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error in GoogleAuth Controller:", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
