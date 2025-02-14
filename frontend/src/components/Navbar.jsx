@@ -9,7 +9,6 @@ const Navbar = () => {
   const { setuser, logout } = userStore();
   const { addContact, deleteRequest } = useChatStore();
 
-  
   const handleAccept = async (email) => {
     try {
       if (!email) {
@@ -73,7 +72,7 @@ const Navbar = () => {
 
               {setuser && (
                 <>
-                  <div className="dropdown dropdown-bottom dropdown-end">
+                  <div className="dropdown relative sm:dropdown-end">
                     <div
                       tabIndex={0}
                       role="button"
@@ -92,14 +91,14 @@ const Navbar = () => {
                     </div>
                     <ul
                       tabIndex={0}
-                      className="dropdown-content menu bg-base-100 rounded-box z-[1] w-80 p-2 shadow gap-4"
+                      className="dropdown-content absolute -right-20 menu bg-base-100 rounded-box z-[1] w-80 p-2 shadow gap-4"
                     >
                       {/* TODO: This would be dynamic */}
                       {setuser.requests?.map((user) => (
                         <li key={user._id}>
                           <div>
                             <img
-                              className="inline-block size-12 rounded-full"
+                              className="inline-block size-22 rounded-full"
                               src={user.profilepic}
                               alt="/profile.png"
                             />
