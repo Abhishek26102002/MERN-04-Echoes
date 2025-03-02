@@ -97,6 +97,9 @@ export const login = async (req, res) => {
         email: user.email,
         profilepic: user.profilepic,
         createdAt: user.createdAt,
+        requests: user.requests,
+        contact: user.contact,
+        activeStatus: user.activeStatus,
       },
     });
   } catch (error) {
