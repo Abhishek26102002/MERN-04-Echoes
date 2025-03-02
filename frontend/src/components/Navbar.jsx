@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { userStore } from "../ApiStore/userStore";
 import { useChatStore } from "../ApiStore/useChatStore";
 import { Link } from "react-router-dom";
@@ -52,7 +52,7 @@ const Navbar = () => {
                 className="flex items-center gap-2.5 hover:opacity-80 transition-all"
               >
                 <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <img src="/logo02.png" alt="" />
+                  <img src="/logo02.png" alt="Echoes" />
                 </div>
                 <h1 className="text-lg font-bold">Echoes</h1>
               </Link>
@@ -80,10 +80,10 @@ const Navbar = () => {
                     >
                       <Users className="size-5" />
                       <span className="hidden sm:inline">Requests</span>
-                      {setuser.requests?.length > 0 ? (
+                      {setuser?.requests?.length > 0 ? (
                         <span
                           className="absolute -top-1 -left-1 size-3 bg-pink-500 
-                  rounded-full "
+                          rounded-full "
                         />
                       ) : (
                         " "
@@ -94,11 +94,11 @@ const Navbar = () => {
                       className="dropdown-content absolute -right-20 menu bg-base-100 rounded-box z-[1] w-80 p-2 shadow gap-4"
                     >
                       {/* TODO: This would be dynamic */}
-                      {setuser.requests?.map((user) => (
+                      {setuser?.requests?.map((user) => (
                         <li key={user._id}>
                           <div>
                             <img
-                              className="inline-block size-22 rounded-full"
+                              className="inline-block size-12 rounded-full"
                               src={user.profilepic}
                               alt="/profile.png"
                             />

@@ -22,18 +22,15 @@ export const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUserLoading: false,
   isMessageLoading: false,
-
+  
   getUsers: async () => {
-    set({ isUserLoading: true });
+    
     try {
       const res = await axiosInstance.get("/message/users");
       set({ users: res.data.data[0].contact });
-     
     } catch (error) {
       console.log("Error in getusers useChatStore", error);
       toast.error(error.response.data.message);
-    } finally {
-      set({ isUserLoading: false });
     }
   },
   addContact: async (email) => {

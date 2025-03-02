@@ -64,7 +64,6 @@ export const userStore = create((set, get) => ({
     set({ isLogin: true });
     try {
       const res = await axiosInstance.post("/auth/google", { code });
-      console.log(res);
       set({ setuser: res.data.data });
       toast.success(res.data.message);
       get().connectSocket();

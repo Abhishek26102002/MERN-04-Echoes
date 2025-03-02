@@ -6,6 +6,7 @@ import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { userStore } from "../ApiStore/userStore";
 import { formatMessageTime } from "../lib/utils";
 import { useRef } from "react";
+import { Sidebar } from "lucide-react";
 
 const ChatContainer = () => {
   const {
@@ -15,8 +16,7 @@ const ChatContainer = () => {
     selectedUser,
     isMessageLoading,
     subscribeToMessages,
-    unsubscribefromMessages
-    
+    unsubscribefromMessages,
   } = useChatStore();
 
   const { setuser } = userStore();
@@ -55,8 +55,6 @@ const ChatContainer = () => {
       </div>
     );
   }
-
- 
 
   return (
     <div className="flex flex-1 flex-col overflow-auto">

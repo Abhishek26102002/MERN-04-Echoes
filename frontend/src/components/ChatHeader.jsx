@@ -34,7 +34,7 @@ const ChatHeader = () => {
     }
   };
   return (
-    <div className="p-2.5 border-b border-base-300">
+    <div className="p-2.5 border-b border-base-300 ">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-start gap-3">
           {/* Avatar */}
@@ -55,11 +55,16 @@ const ChatHeader = () => {
             </p>
           </div>
         </div>
-        <div className="flex flex-row place-content-between w-[10%]">
+        <div className="flex flex-row place-content-between ">
           {/* More settings */}
           <div className="dropdown dropdown-bottom dropdown-end">
-            <div tabIndex={0} role="button" className="btn glass btn-sm">
-              <EllipsisVertical />
+            <div className="flex">
+              <div tabIndex={0} role="button" className="me-5 shadow-lg">
+                <EllipsisVertical />
+              </div>
+              <button onClick={() => setSelectedUser(null)}>
+                <X />
+              </button>
             </div>
             <ul
               tabIndex={0}
@@ -86,9 +91,7 @@ const ChatHeader = () => {
             </ul>
           </div>
           {/* Close button */}
-          <button onClick={() => setSelectedUser(null)}>
-            <X />
-          </button>
+
           {/* Modal */}
           <dialog id="my_modal_31" className="modal">
             <div className="modal-box">
