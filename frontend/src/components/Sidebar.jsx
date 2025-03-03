@@ -81,7 +81,7 @@ const Sidebar = () => {
             <div className="modal-box">
               <form method="dialog">
                 {/* if there is a button in form, it will close the modal */}
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-0 top-0">
                   <X className="size-6" />
                 </button>
               </form>
@@ -93,9 +93,9 @@ const Sidebar = () => {
                   ref={emailRef}
                   type="text"
                   className="w-[70%] input input-bordered rounded-lg input-md"
-                  placeholder="Enter Contact Email"
+                  placeholder="Enter contact email"
                 />
-                <button className="btn btn-circle" type="submit">
+                <button className="shadow-full p-3" type="submit">
                   <UserPlus />
                 </button>
               </form>
@@ -119,7 +119,7 @@ const Sidebar = () => {
               }
             `}
             >
-              <div className="">
+              <div className="relative">
                 <img
                   src={user.profilepic || "/profile.png"}
                   alt={user.fullname}
@@ -128,7 +128,7 @@ const Sidebar = () => {
                 {onlineUsers.includes(user._id) && (
                   <span
                     className="absolute bottom-0 right-0 size-3 bg-green-500 
-                  rounded-full ring-2 ring-zinc-900"
+                  rounded-full "
                   />
                 )}
               </div>

@@ -3,6 +3,7 @@ import { useChatStore } from "../ApiStore/useChatStore";
 import { Image, SendHorizontal, X, SmilePlus } from "lucide-react";
 import { toast } from "react-hot-toast";
 import EmojiPicker from "emoji-picker-react";
+import { useThemeStore } from "../ApiStore/useThemeStore";
 
 const MessageInput = () => {
   const [text, setText] = useState("");
@@ -10,6 +11,7 @@ const MessageInput = () => {
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { theme } = useThemeStore();
 
   const handleEmojiClick = (emojiData) => {
     setText((prev) => prev + emojiData.emoji);
@@ -58,8 +60,8 @@ const MessageInput = () => {
     <div className="w-full p-1 pb-2">
       {/* Emoji Picker */}
       {showEmojiPicker && (
-        <div className="absolute bottom-24 sm:left-80">
-          <EmojiPicker onEmojiClick={handleEmojiClick} />
+        <div className=" absolute bottom-24 sm:left-80">
+          <EmojiPicker theme={theme} onEmojiClick={handleEmojiClick} />
           <button
             onClick={() => setShowEmojiPicker(false)}
             className="absolute -top-2 -right-2 shadow-lg rounded-full"
@@ -102,7 +104,7 @@ const MessageInput = () => {
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-md"
-            placeholder="Type your text....."
+            placeholder="Message"
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
@@ -126,7 +128,7 @@ const MessageInput = () => {
         <button
           type="submit"
           className={`justify-center items-center p-1 ${
-            !text.trim() && !imagePreview ? "text-gray-500" : "text-black"
+            !text.trim() && !imagePreview ? "text-gray-500" : ""
           }`}
           disabled={!text.trim() && !imagePreview}
         >

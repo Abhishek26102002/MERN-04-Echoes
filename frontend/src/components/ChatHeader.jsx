@@ -60,9 +60,9 @@ const ChatHeader = () => {
           {/* More settings */}
           <div className="dropdown dropdown-bottom dropdown-end">
             <div className="flex">
-              <div tabIndex={0} role="button" className="me-5 shadow-full">
+              <button tabIndex={0} role="button" className="me-5 shadow-full">
                 <EllipsisVertical />
-              </div>
+              </button>
               <button onClick={() => setSelectedUser(null)}>
                 <X />
               </button>
