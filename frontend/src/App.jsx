@@ -43,6 +43,7 @@ function App() {
           path="/"
           element={setuser ? <HomePage /> : <Navigate to="/login" />}
         />
+
         <Route
           path="/signup"
           element={
@@ -71,6 +72,11 @@ function App() {
         <Route
           path="/profile"
           element={setuser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+
+        <Route
+          path="*"
+          element={setuser ? <HomePage /> : <Navigate to="/login" />}
         />
       </Routes>
 

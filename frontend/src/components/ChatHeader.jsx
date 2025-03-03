@@ -13,6 +13,7 @@ const ChatHeader = () => {
   const handleBlock = async () => {
     try {
       await blockContact(selectedUser.email);
+      setSelectedUser(null);
     } catch (error) {
       toast.error(error);
       console.log("Error in block contact", error);
@@ -34,7 +35,7 @@ const ChatHeader = () => {
     }
   };
   return (
-    <div className="p-2.5 border-b border-base-300 ">
+    <div className="p-2 border-b border-base-300 sm:-mt-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-start gap-3">
           {/* Avatar */}
@@ -59,7 +60,7 @@ const ChatHeader = () => {
           {/* More settings */}
           <div className="dropdown dropdown-bottom dropdown-end">
             <div className="flex">
-              <div tabIndex={0} role="button" className="me-5 shadow-lg">
+              <div tabIndex={0} role="button" className="me-5 shadow-full">
                 <EllipsisVertical />
               </div>
               <button onClick={() => setSelectedUser(null)}>

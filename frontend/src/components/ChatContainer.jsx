@@ -37,10 +37,10 @@ const ChatContainer = () => {
   ]);
 
   useEffect(() => {
-    if (!MessageEndRef.current || !messages?.length) return;
+    if (!MessageEndRef?.current || !messages?.length) return;
 
     const timeout = setTimeout(() => {
-      MessageEndRef.current.scrollIntoView({ behavior: "smooth" });
+      MessageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
     }, 100); // Add a small delay
 
     return () => clearTimeout(timeout); // Cleanup function
@@ -59,7 +59,7 @@ const ChatContainer = () => {
   return (
     <div className="flex flex-1 flex-col overflow-auto">
       <ChatHeader />
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-2 space-y-4">
         {messages.map((message) => (
           <div
             key={message._id}

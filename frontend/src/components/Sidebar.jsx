@@ -1,10 +1,17 @@
 import React, { useState, useRef } from "react";
 import { useChatStore } from "../ApiStore/useChatStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-import { CircleUser, X, MessageSquareDiff, CirclePlus,UserPlus } from "lucide-react";
+import {
+  CircleUser,
+  X,
+  MessageSquareDiff,
+  CirclePlus,
+  UserPlus,
+} from "lucide-react";
 import { userStore } from "../ApiStore/userStore";
 import { toast } from "react-hot-toast";
 import { useMediaQuery } from "react-responsive";
+
 
 const Sidebar = () => {
   const {
@@ -39,6 +46,7 @@ const Sidebar = () => {
 
       await addContact(email);
       emailRef.current.value = ""; // Clear input after adding contact
+      document.getElementById("my_modal_3").close();
     } catch (error) {
       toast.error("Error adding contact");
       console.error("Error adding contact:", error);
@@ -48,24 +56,24 @@ const Sidebar = () => {
   return (
     <aside>
       <div className="h-full w-screen sm:w-72 sm:border-r border-base-300 flex flex-col transition-all duration-200 ">
-        <div className="w-full p-5 border-b border-base-300 flex flex-row place-content-between">
+        <div className="w-full p-4 sm:p-2 border-b border-base-300 flex flex-row place-content-between">
           <div className="items-center gap-2 flex">
             <CircleUser className="size-6" />
             <span className="font-medium block">Contacts</span>
           </div>
           {isLargeScreen ? (
             <button
-            className="btn btn-sm"
-            onClick={() => document.getElementById("my_modal_3").showModal()}
-          >
-            <UserPlus className="size-5" />
-          </button>
-          ) : (
-            <button
-              className="absolute bottom-20 right-10 sm:right-14 shadow-lg "
+              className="btn btn-sm"
               onClick={() => document.getElementById("my_modal_3").showModal()}
             >
-              <MessageSquareDiff className="text-accent shadow-lg" size={40} />
+              <UserPlus className="size-5" />
+            </button>
+          ) : (
+            <button
+              className="absolute bottom-16 right-10 sm:right-14 shadow-lg rounded-lg"
+              onClick={() => document.getElementById("my_modal_3").showModal()}
+            >
+              <MessageSquareDiff className="text-accent shadow-lg" size={42} />
             </button>
           )}
 
@@ -88,7 +96,7 @@ const Sidebar = () => {
                   placeholder="Enter Contact Email"
                 />
                 <button className="btn btn-circle" type="submit">
-                <UserPlus />
+                  <UserPlus />
                 </button>
               </form>
             </div>
