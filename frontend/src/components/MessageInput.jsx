@@ -58,7 +58,7 @@ const MessageInput = () => {
     <div className="w-full p-1 pb-2">
       {/* Emoji Picker */}
       {showEmojiPicker && (
-        <div className="absolute bottom-24 left-4 sm:left-80">
+        <div className="absolute bottom-24 sm:left-80">
           <EmojiPicker onEmojiClick={handleEmojiClick} />
           <button
             onClick={() => setShowEmojiPicker(false)}
